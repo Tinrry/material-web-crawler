@@ -18,9 +18,8 @@ class met_web(scrapy.Spider):
 
     weather={}
     def start_requests(self):
-
+        start_url=['https://www.matweb.com/Search/MaterialGroupSearch.aspx?GroupID=178']    # ASTM Steel
         #start_url=['http://www.matweb.com/search/QuickText.aspx?SearchText=AA7075']
-        start_url=['http://www.matweb.com/search/QuickText.aspx?SearchText=AA2618']
         #start_url = ['http://www.matweb.com/search/QuickText.aspx?SearchText=AA5083']
         #start_url = ['http://www.matweb.com/search/QuickText.aspx?SearchText=AA7150']
         #start_url =['http://www.matweb.com/search/QuickText.aspx?SearchText=AA1235']
@@ -80,43 +79,8 @@ class met_web(scrapy.Spider):
         csv_file = folder_path + title + '.csv'
         if not os.path.exists(csv_file):
             detail_file.to_csv(csv_file,sep=',', encoding='utf-8',index=False)
-        ####################Physical property header_end ########################################################
-        d = {'col1': ['URL'], 'col2': [url], 'col3': ['Title'], 'col4': [title]}
 
-        df = pd.DataFrame(data=d)
-        table_title = ''
-        table_title_reminder = True
-        for resp in response.xpath(
-                "//table[@class='tabledataformat']/tr"):  # //div[@id='feed-tabs']#//div[@id='details']/div/div[@class='day muted']
-            header_ck = resp.xpath("th/text()").extract_first()
-            header_ck.strip()
 
-            if header_ck:
-
-                print('header_contain : ', header_ck)
-                if table_title_reminder == True:
-                    table_title = header_ck
-                    table_title_reminder = False
-
-                physical_property = resp.xpath("th[1]/text()").extract_first()
-                metrix = resp.xpath("th[2]/text()").extract_first()
-                english = resp.xpath("th[3]/text()").extract_first()
-                comments = resp.xpath("th[4]/text()").extract_first()
-                if (metrix != 'None' and english != 'None'):
-                    print('\n physical property is ',physical_property,metrix,english,comments)
-                    d = {'col1': physical_property, 'col2': metrix, 'col3': english, 'col4': comments}
-
-                    df = df.append(d, ignore_index=True)
-
-            else:
-                print('some thing unexpected happened')
-
-        print('\n ############### Dataframe is######################')
-        file_name=title+".csv"
-        print(df)
-        file_name = folder_path+table_title+".csv"
-        df.drop(df.index[0],inplace=True)
-        df.to_csv(file_name, sep=',', header=False,index=False)
 
 if __name__ == '__main__':
 

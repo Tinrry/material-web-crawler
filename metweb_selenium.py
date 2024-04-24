@@ -18,7 +18,7 @@ url = 'https://www.matweb.com/search/DataSheet.aspx?MatGUID=e5e92a1ae7f24e1b918b
 
 options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(options=options)
-
+# TODO need to login
 cookies = load_cookies(driver, 'cookie')
 # driver.add_cookie({'name': 'zhenghuanhuan@zhejianglab.com', 'value': 'zhijiang2893161'})
 driver.get(url = 'https://www.matweb.com/search/DataSheet.aspx?MatGUID=e5e92a1ae7f24e1b918bf4e65dbc7e52')
