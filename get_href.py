@@ -14,14 +14,14 @@ def get_group_href(save_path, file_name):
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
-    with open(file_name, 'r') as f:
+    with open(file_name, 'r', errors='ignore') as f:
         text = f.read()
         text = text.replace('=\n', '')
         href_list = re.findall(r'href=3D"(.*MatGUID.*)"', text)
 
         defuse_str = '3D'
         href_list = [i.replace(defuse_str, '') for i in href_list]
-        print(href_list[0])
+        # print(href_list[0])
 
         title_list = re.findall(r'href=3D.*MatGUID.*>(.*?)</a>', text)
         if len(title_list) != len(href_list):
@@ -38,4 +38,8 @@ if __name__ == '__main__':
     """
     for _, _, files in os.walk('hand'):
         for file in files:
-            get_group_href('get_link', 'hand/' + file)
+            try:
+                get_group_href('./get_link', 'hand/' + file)
+            except Exception as e:
+                print(f'file not decode: {file}')
+                print(f"Error: {e}")
