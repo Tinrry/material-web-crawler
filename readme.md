@@ -8,7 +8,8 @@
 ```
 
 
-2. 根据get_link文件夹下的文件保存的href，使用matweb.py进行下载网页，保存到get_html文件夹下。
+2. 根据get_link文件夹下的文件保存的href，使用matweb.py进行下载网页，保存到get_html文件夹下.
+   这个适配的是chrome版本的，需要有chrome浏览器，（可能）
 ```shell
       python matweb.py
 ```
