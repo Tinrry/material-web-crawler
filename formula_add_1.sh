@@ -1,11 +1,21 @@
 #!/bin/bash
 
 # 输入字符串
-input="Cs6TbErBr12"
+input_file="compositions.txt"
+while IFS= read -r line; do
+    # 提取链接
+    link=$(echo "$line" | awk -F':' '{print $1 ":" $2}')
 
-# 使用grep和sed提取元素和数字
-elements=$(echo "$input" | grep -oE '[A-Z][a-z]*[0-9]*' | sed 's/\([A-Z][a-z]*\)\([0-9]*\)/\1 \2/' | awk '{if ($2 == "") $2 = 1; print $1 $2}')
+    # 提取化学式
+    formula=$(echo "$line" | awk -F':' '{print $3}')
 
-# 将结果合并成一行，并输出结果
-elements=$(echo "$elements" | tr -d '\n')
-echo "$elements"
+    # 使用grep和sed提取元素和数字
+    elements=$(echo "$formula" | grep -oE '[A-Z][a-z]*[0-9]*' | sed 's/\([A-Z][a-z]*\)\([0-9]*\)/\1 \2/' | awk '{if ($2 == "") $2 = 1; print $1 $2}')
+
+    # 将结果合并成一行，并输出结果
+    elements=$(echo "$elements" | tr -d '\n')
+
+    # 将结果写入文件
+    echo $link":"$elements >> compositions-CIF.txt
+
+done < "$input_file"
