@@ -15,7 +15,13 @@ while IFS= read -r line; do
     # 将结果合并成一行，并输出结果
     elements=$(echo "$elements" | sort | tr -d '\n')
 
-    # 将结果写入文件
-    echo $link":"$elements
+    # 判断elements是否在file-list.txt中
+    if grep -q "$elements" file-list.txt; then
+        # 将结果写入文件
+        echo $link":"$elements >> compositions-CIF.txt
+    else
+        echo "The formula $elements is not in file-list.txt"
+        echo $line >> excepts.txt
+    fi
 
 done < "$input_file"
