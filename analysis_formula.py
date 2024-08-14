@@ -41,3 +41,7 @@ with open('excepts.txt', 'r') as f:
                     f.write(f'{line}\n')
     
 print('Done!')
+
+""" exception example
+AlO6TcYb2 this should match Al2O12Tc2Yb4
+"""
