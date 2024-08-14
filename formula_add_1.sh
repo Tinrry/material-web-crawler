@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # 输入字符串
-input_file="compositions-2.txt"
+input_file="compositions.txt"
+rm -f compositions-CIF.txt excepts.txt
+
 while IFS= read -r line; do
     # 提取链接
     link=$(echo "$line" | awk -F':' '{print $1 ":" $2}')
