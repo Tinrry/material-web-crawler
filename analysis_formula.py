@@ -1,10 +1,28 @@
 import os
-import re
+from utils_formula import *
 
-if os.path.exists('factor_2_CIF.txt'):
-    os.remove('factor_2_CIF.txt')
+#### global variables
+debug = False
 
-with open('excepts.txt', 'r') as f:
+
+### main
+if debug:
+    print('debug mode')
+    compositions_f = 'debug-compositions.txt'
+    catch_items = 'catch_items.txt'
+    except_items = 'except_items.txt'
+else:
+    print('normal mode')
+    compositions_f = 'excepts.txt'
+    catch_items = 'factor_2_CIF.txt'
+    except_items = 'excepts-2.txt'
+
+if os.path.exists(catch_items):
+    os.remove(catch_items)
+if os.path.exists(except_items):
+    os.remove(except_items)
+
+with open(compositions_f, 'r') as f:
     lines = f.readlines()
     for line in lines:
         # split the last : into 2-parts
@@ -12,36 +30,31 @@ with open('excepts.txt', 'r') as f:
         line_list = line.rsplit(':', 1)  # split the last ':' into 2 parts
         link, formula = line_list[0], line_list[1]
 
-        formula_list = re.findall(r'([A-Z]+[a-z*])([\d]*)', formula)
-        sorted_formula = sorted(formula_list)
-        formula_1 = list(map(lambda x: x[0] + (x[1] or '1' ), sorted_formula))
-        reduced_formula = ''.join(formula_1)
+        reduced_formula, sorted_formula = prepare_formula(formula)
+        # save_results('file-list.txt', line, link, reduced_formula)
 
-        # expand reduced formula * 2
-        factor = 2
-        expanded_formula = ''
-        expanded_formula = list(map(lambda i: i[0] + str(int(i[1] or '1') * factor), sorted_formula))
-        factor_2_f = ''.join(expanded_formula)
+        # expand reduced formula * 2, save the results weather it is in the file-list.txt.
+        # factor = 2
+        # factor_2_f = factor_formula(sorted_formula, factor)
+        # save_results('file-list.txt', line, link, factor_2_f)
 
-        # find the factor_2_f in the file-list.txt
-        with open('file-list.txt', 'r') as f:
-            file_lines = f.readlines()
-            for file_line in file_lines:
-                if factor_2_f in file_line:
-                    # got it
-                    # print(f'factor_2_f: {factor_2_f} found in file_line: {file_line}')
-                    write_line = f'{link}:{factor_2_f}\n'
-                    with open('factor_2_CIF.txt', 'a') as f:
-                        f.write(write_line)
-                    break
-            else:
-                # not found
-                print(f'factor_2_f: {factor_2_f} not found in file-list.txt')
-                with open('excepts-2.txt', 'a') as f:
-                    f.write(f'{line}\n')
+        # if formula have quotation marks, expansion
+
+        
+        if debug:
+            print(f'link: {link}, formula: {formula}, reduced_formula: {reduced_formula}, factor_2_f: {factor_2_f}')
     
 print('Done!')
 
-""" exception example
-AlO6TcYb2 this should match Al2O12Tc2Yb4
+"""
+exception items:
+case 1:
+    TaVSe8I
+    I Se8 Ta V
+    I2Se16Ta2V2
+
+case 2:
+    Tm3Lu(Sc4Bi3)4
+    Bi12Lu1Sc16Tm3
+    Bi12Lu1Sc16Tm3.CIF
 """
