@@ -4,23 +4,21 @@ from utils_formula import *
 #### global variables
 debug = False
 
-
 ### main
 if debug:
     print('debug mode')
     compositions_f = 'debug-compositions.txt'
-    catch_items = 'catch_items.txt'
-    except_items = 'except_items.txt'
 else:
     print('normal mode')
     compositions_f = 'excepts.txt'
-    catch_items = 'factor_2_CIF.txt'
-    except_items = 'excepts-2.txt'
 
-if os.path.exists(catch_items):
-    os.remove(catch_items)
-if os.path.exists(except_items):
-    os.remove(except_items)
+catch_file = 'catch_items.txt'
+except_file = 'except_items.txt'
+
+if os.path.exists(catch_file):
+    os.remove(catch_file)
+if os.path.exists(except_file):
+    os.remove(except_file)
 
 with open(compositions_f, 'r') as f:
     lines = f.readlines()
@@ -30,19 +28,19 @@ with open(compositions_f, 'r') as f:
         line_list = line.rsplit(':', 1)  # split the last ':' into 2 parts
         link, formula = line_list[0], line_list[1]
 
-        reduced_formula, sorted_formula = prepare_formula(formula)
-        # save_results('file-list.txt', line, link, reduced_formula)
-
-        # expand reduced formula * 2, save the results weather it is in the file-list.txt.
-        # factor = 2
-        # factor_2_f = factor_formula(sorted_formula, factor)
-        # save_results('file-list.txt', line, link, factor_2_f)
-
-        # if formula have quotation marks, expansion
-
-        
-        if debug:
-            print(f'link: {link}, formula: {formula}, reduced_formula: {reduced_formula}, factor_2_f: {factor_2_f}')
+        expanded_formula = parse_formula(formula)
+        if is_in('file-list.txt', expanded_formula):
+            write_match_results(catch_file, link, expanded_formula)
+        else:
+            
+            factor = 2
+            factor_2_f = factor_formula(expanded_formula, factor)
+            if is_in('file-list.txt', factor_2_f):
+                write_match_results(catch_file, link, factor_2_f)
+            else:
+                print('Parse formula not found:', expanded_formula)
+                print('     Formula * 2 not found:', factor_2_f)
+                write_except_results(except_file, line)
     
 print('Done!')
 
@@ -57,4 +55,8 @@ case 2:
     Tm3Lu(Sc4Bi3)4
     Bi12Lu1Sc16Tm3
     Bi12Lu1Sc16Tm3.CIF
+
+case 3:
+    Ba6Lu2(WO6)3
+    Ba6 Lu2 O18 W3
 """

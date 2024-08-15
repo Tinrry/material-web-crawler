@@ -11,32 +11,27 @@ def is_in(file, formula):
                 return True
         return False
 
+def write_match_results(file, link, formula):
+    write_line = f'{link}:{formula}\n'
+    with open(file, 'a') as f:
+        f.write(write_line)
 
-def save_results(total_file, catch_file, except_file, line, link, formula):
-    if is_in(total_file, formula):
-        write_line = f'{link}:{formula}\n'
-        with open(catch_file, 'a') as f:
-            f.write(write_line)
-    else:
-        print(f'formula: {formula} not found in file-list.txt')
-        with open(except_file, 'a') as f:
-            f.write(f'{line}\n')
+
+def write_except_results(file, line):
+    with open(file, 'a') as f:
+        f.write(f'{line}\n')
             
 
-def prepare_formula(formula):
-    formula_list = re.findall(r'([A-Z][a-z]*)([\d]*)', formula)
-    sorted_formula = sorted(formula_list)
-    formula_1 = list(map(lambda x: x[0] + (x[1] or '1' ), sorted_formula))
-    reduced_formula = ''.join(formula_1)
-    return reduced_formula, sorted_formula
-
-
 def factor_formula(formula, factor):
-    expanded_formula = ''
-    expanded_formula = list(map(lambda i: i[0] + str(int(i[1] or '1') * factor), formula))
-    return ''.join(expanded_formula)
+    expanded_elements = defaultdict(int)
+    elements = re.findall(r'([A-Z][a-z]*)([\d]*)', formula)
+    elements = sorted(elements, key=lambda x: x[0])
+    for element, count in elements:
+        count = int(count) if count else 1
+        expanded_elements[element] = count * factor
+    return ''.join(f'{element}{count}' for element, count in expanded_elements.items())
 
-
+   
 def parse_formula(formula):
     # 递归解析公式中的嵌套括号
     def expand(match):
@@ -49,6 +44,7 @@ def parse_formula(formula):
         for element, count in elements:
             count = int(count) if count else 1
             expanded_elements[element] += count * multiplier
+
         
         return expanded_elements
 
@@ -65,6 +61,7 @@ def parse_formula(formula):
     # 最终合并所有元素
     final_elements = defaultdict(int)
     elements = re.findall(r'([A-Z][a-z]*)([\d]*)', expanded_formula)
+    elements = sorted(elements, key=lambda x: x[0])
     for element, count in elements:
         count = int(count) if count else 1
         final_elements[element] += count
@@ -75,24 +72,23 @@ def parse_formula(formula):
 
 
 ### test
-formula = "(Sc4Bi3)4"
-expanded_formula = parse_formula(formula)
-assert expanded_formula == 'Sc16Bi12', 'Test failed!'
-print('Test passed!')
+def test_parse_formula():
+    formula = "(Sc4Bi3)4"
+    expanded_formula = parse_formula(formula)
+    assert expanded_formula == 'Sc16Bi12', 'Test failed!'
+    print('Test passed!')
 
-formula = "Sc4Bi3"
-expanded_formula = parse_formula(formula)
-assert expanded_formula == 'Sc4Bi3', 'Test failed!'
-print('Test passed!')
+    formula = "Sc4Bi3"
+    expanded_formula = parse_formula(formula)
+    assert expanded_formula == 'Sc4Bi3', 'Test failed!'
+    print('Test passed!')
 
-formula = "(Sc4Bi3)4(Sc4Bi3)4"
-expanded_formula = parse_formula(formula)
-assert expanded_formula == 'Sc32Bi24', 'Test failed!'
-print('Test passed!')
+    formula = "(Sc4Bi3)4(Sc4Bi3)4"
+    expanded_formula = parse_formula(formula)
+    assert expanded_formula == 'Sc32Bi24', 'Test failed!'
+    print('Test passed!')
 
-formula = "(Sc4Bi3(P4Ci3)2)4(Sc4Bi3)4" 
-expanded_formula = parse_formula(formula)
-assert expanded_formula == 'Sc32Bi24P32Ci24', 'Test failed!'
-print('Test passed!')
-
-
+    formula = "(Sc4Bi3(P4Ci3)2)4(Sc4Bi3)4" 
+    expanded_formula = parse_formula(formula)
+    assert expanded_formula == 'Sc32Bi24P32Ci24', 'Test failed!'
+    print('Test passed!')
