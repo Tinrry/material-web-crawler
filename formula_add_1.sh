@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 输入字符串
-input_file="debug-compositions.txt"
+input_file="compositions.txt"
 rm -f compositions-CIF.txt excepts.txt
 
 while IFS= read -r line; do
