@@ -37,12 +37,14 @@ def download(driver, url):
     
   return
 
-if __name__ == "__main__":
-  url_list = ["https://next-gen.materialsproject.org/materials/gnome/mp-3199100", 
-              "https://next-gen.materialsproject.org/materials/gnome/mp-3170010", 
-              "https://next-gen.materialsproject.org/materials/gnome/mp-3170054", 
-              "https://next-gen.materialsproject.org/materials/gnome/mp-3199060"]
+def read_file(abs_file):
+  with open('compositions.txt', 'r') as file:
+    lines = file.readlines()
+  url_list = list(map(lambda x: x.rsplit(':', 1)[0], lines))
+  return url_list
 
+if __name__ == "__main__":
+  url_list = read_file('compositions.txt')
   driver = webdriver.Firefox()
   login(driver)
   for url in url_list:
