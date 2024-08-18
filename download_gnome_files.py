@@ -2,8 +2,6 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 # driver = webdriver.Firefox()
@@ -43,9 +41,16 @@ def read_file(abs_file):
   url_list = list(map(lambda x: x.rsplit(':', 1)[0], lines))
   return url_list
 
+from selenium.webdriver.firefox.options import Options
+
 if __name__ == "__main__":
   url_list = read_file('compositions.txt')
-  driver = webdriver.Firefox()
+  # snap in ubuntu, the profile is not loaded properly
+  firefox_options = Options()
+  firefox_options.add_argument("-profile")
+  firefox_options.add_argument("/home/username/.mozilla/firefox/your_profile")      # Path to your profile
+  driver = webdriver.Firefox(options=firefox_options)
+
   login(driver)
   for url in url_list:
     download(driver, url)
