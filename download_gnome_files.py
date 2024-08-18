@@ -31,6 +31,8 @@ def download(driver, url):
     elements[0].find_elements(By.CLASS_NAME, "dropdown-content")[0].find_elements(By.XPATH, "div")[-1].click()
     time.sleep(2) # Wait for webpage to response
   except Exception as e:
+    with open('error.log', 'a') as file:
+      file.write(f"{url}\n")
     print(f"Error downloading {url}: {e}")
     
   return
