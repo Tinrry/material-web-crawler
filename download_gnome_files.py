@@ -42,6 +42,7 @@ def read_file(abs_file):
   return url_list
 
 from selenium.webdriver.firefox.options import Options
+from tqdm import tqdm
 
 if __name__ == "__main__":
   url_list = read_file('compositions.txt')
@@ -52,6 +53,7 @@ if __name__ == "__main__":
   driver = webdriver.Firefox(options=firefox_options)
 
   login(driver)
-  for url in url_list:
+  # 增加进度条
+  for url in tqdm(url_list, desc="Downloading files"):
     download(driver, url)
   driver.quit()
