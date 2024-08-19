@@ -33,6 +33,8 @@ def download(driver, url):
   except Exception as e:
     with open('error.log', 'a') as file:
       file.write(f"{url}\n")
+    # refresh the page
+    driver.refresh()
     print(f"Error downloading {url}: {e}")
     
   return
