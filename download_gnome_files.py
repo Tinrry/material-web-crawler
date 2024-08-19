@@ -31,7 +31,7 @@ def download(driver, url):
     elements[0].find_elements(By.CLASS_NAME, "dropdown-content")[0].find_elements(By.XPATH, "div")[-1].click()
     time.sleep(2) # Wait for webpage to response
   except Exception as e:
-    with open('error.log', 'a') as file:
+    with open('error-1.log', 'a') as file:
       file.write(f"{url}\n")
     # refresh the page
     driver.refresh()
@@ -40,7 +40,7 @@ def download(driver, url):
   return
 
 def read_file(abs_file):
-  with open('compositions.txt', 'r') as file:
+  with open(abs_file, 'r') as file:
     lines = file.readlines()
   url_list = list(map(lambda x: x.rsplit(':', 1)[0], lines))
   return url_list
@@ -49,11 +49,12 @@ from selenium.webdriver.firefox.options import Options
 from tqdm import tqdm
 
 if __name__ == "__main__":
-  url_list = read_file('compositions.txt')
+  # ofter a 1000+ files, firefox lost connection
+  url_list = read_file('error.log')
   # snap in ubuntu, the profile is not loaded properly
   firefox_options = Options()
   firefox_options.add_argument("-profile")
-  firefox_options.add_argument("/home/username/.mozilla/firefox/your_profile")      # Path to your profile
+  firefox_options.add_argument("/home/zhenghuanhuan/snap/firefox/common/.mozilla/firefox")      # Path to myserver profile
   driver = webdriver.Firefox(options=firefox_options)
 
   login(driver)
