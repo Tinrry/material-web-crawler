@@ -39,10 +39,13 @@ def download(driver, url):
     
   return
 
-def read_file(abs_file):
+def read_file(abs_file, flag=True):
   with open(abs_file, 'r') as file:
     lines = file.readlines()
-  url_list = list(map(lambda x: x.rsplit(':', 1)[0], lines))
+  if flag:
+    url_list = list(map(lambda x: x.rsplit(':', 1)[0], lines))
+  else:
+    url_list = lines
   return url_list
 
 from selenium.webdriver.firefox.options import Options
@@ -50,7 +53,7 @@ from tqdm import tqdm
 
 if __name__ == "__main__":
   # ofter a 1000+ files, firefox lost connection
-  url_list = read_file('error.log')
+  url_list = read_file('error.log', flag=False)   # 不带composition的文件
   # snap in ubuntu, the profile is not loaded properly
   firefox_options = Options()
   firefox_options.add_argument("-profile")
