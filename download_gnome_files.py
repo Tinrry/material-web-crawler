@@ -31,7 +31,7 @@ def download(driver, url):
     elements[0].find_elements(By.CLASS_NAME, "dropdown-content")[0].find_elements(By.XPATH, "div")[-1].click()
     time.sleep(2) # Wait for webpage to response
   except Exception as e:
-    with open('error-1.log', 'a') as file:
+    with open(error_file, 'a') as file:
       file.write(f"{url}\n")
     # refresh the page
     driver.refresh()
@@ -51,9 +51,11 @@ def read_file(abs_file, flag=True):
 from selenium.webdriver.firefox.options import Options
 from tqdm import tqdm
 
+url_file = 'error-1.log'
+error_file = 'error-2.log'
 if __name__ == "__main__":
   # ofter a 1000+ files, firefox lost connection
-  url_list = read_file('error.log', flag=False)   # 不带composition的文件
+  url_list = read_file(url_file, flag=False)   # 不带composition的文件
   # snap in ubuntu, the profile is not loaded properly
   firefox_options = Options()
   firefox_options.add_argument("-profile")
