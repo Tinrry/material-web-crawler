@@ -32,7 +32,8 @@ def download(driver, url):
     time.sleep(2) # Wait for webpage to response
   except Exception as e:
     with open(error_file, 'a') as file:
-      file.write(f"{url}\n")
+      # remove multiple lines
+      file.write(f"{url.strip()}\n")
     # refresh the page
     driver.refresh()
     print(f"Error downloading {url}: {e}")
@@ -51,7 +52,7 @@ def read_file(abs_file, flag=True):
 from selenium.webdriver.firefox.options import Options
 from tqdm import tqdm
 
-url_file = 'error-1.log'
+url_file = 'subset.txt'
 error_file = 'error-2.log'
 if __name__ == "__main__":
   # ofter a 1000+ files, firefox lost connection
