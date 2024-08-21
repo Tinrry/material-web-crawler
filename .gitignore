@@ -4,6 +4,7 @@ by_composition/
 *.zip
 mp-vasp-2047
 temp/
+mp-vasp-2047/
 
 # vim temp files
 *.swp
