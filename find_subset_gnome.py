@@ -33,14 +33,13 @@ def is_in_txt(reduced_f, downloaded_file):
         return False
         
 def func():
-    # 这里面的化学式是Reduced Formula
+    # 这里面的化学式是Reduced Formula, 保存的格式 reduced_formula.zip 文件
     with open('compositions.txt', 'r') as file:
         lines = file.readlines()
         for line in lines:
             line = line.strip()
             url, reduced_f = line.rsplit(':', 1)
-
-            
+            # 在这里不需要进行reduce formula和composition的转换
             if is_in_txt(reduced_f, downloaded_file):
                 print(f"Reduced formula is in downloaded input.txt: {reduced_f}")
             else:
