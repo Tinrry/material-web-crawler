@@ -2,6 +2,11 @@
 by_composition/
 *.tar
 *.zip
+mp-vasp-2047
+temp/
+
+# vim temp files
+*.swp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
