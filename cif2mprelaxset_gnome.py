@@ -13,7 +13,7 @@ with open('compositions.txt', 'r') as file:
         # get the composition from the reduced formula
         composition = get_composition(reduced_f, csv_file='stable_materials_summary.csv')
         if composition is not None:
-            cif_file = f'./by_composition/{reduced_f}.CIF'
+            cif_file = f'./by_composition/{composition}.CIF'
             parser = CifParser(cif_file)
             # write the structure to the cif file
             structure = parser.get_structures(primitive=False)[0]
