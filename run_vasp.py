@@ -63,6 +63,8 @@ def run_vasp(material_file):
     os.chdir('..')
 
 # run vasp use sbatch 
+# TODO 
+# if I run in qlab200 , I need rsync input files from qstation01, and implement a for loop to run all the materials.
 def run_vasp_sbatch(material_file):
     # this is run on station01
     os.chdir(material_file)
