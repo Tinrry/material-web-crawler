@@ -1,7 +1,8 @@
 # big resource files
-*.tar.gz
-fu/
 by_composition/
+by_composition_1921/
+by_composition_1921.tar.gz
+fu/
 *.tar
 *.zip
 mp-vasp-2047
