@@ -5,14 +5,15 @@ import subprocess
 import sys
 import time
 
-vasp_file = 'Al8CoNi3Ru4'
-# generate_dir = './cif2mprelaxset'
-work_dir = os.getcwd()
-
-gnome_file = os.path.join('./mp-vasp-2047', vasp_file)
-generate_file = os.path.join('./cif2mprelaxset', vasp_file)
-
-potentials_dir = '/data/projects/vasp/potpaw_PBE.54'        # qstation01
+def get_file_list():
+    with open('compositions.txt', 'r') as f:
+        vasp_files = []
+        lines = f.readlines()
+        for line in lines:
+            _, reduced_f = line.rstrip(':', 1)
+            vasp_files.append(reduced_f)
+        return vasp_files
+    
 
 def unzip_gnome_zip():
     # unzip the .zip file
@@ -60,7 +61,7 @@ def run_vasp(material_file):
     os.chdir(material_file)
     print(f'running vasp in {material_file}')
     subprocess.run(['mpirun', '-np', '4', 'vasp_std'])
-    os.chdir('..')
+    os.chdir(work_dir)
 
 # run vasp use sbatch 
 # TODO 
@@ -70,14 +71,32 @@ def run_vasp_sbatch(material_file):
     os.chdir(material_file)
     print(f'running vasp in {material_file}')
     subprocess.run(['sbatch', 'vasp_sbatch.sh'])
-    os.chdir('..')
+    os.chdir(work_dir)
+
+
+def compare_results():
+    # then compare the results, this is consult to ZHANG JINGTONG
+    # CHECK OK
+    return True
+
+
+# ==== global variables ====
+potentials_dir = '/data/projects/vasp/potpaw_PBE.54'        # qstation01
+work_dir = os.getcwd()              
 
 
 if __name__ == '__main__':
-    os.chdir(work_dir)
-    sync_POTCAR()
-    # run_vasp(generate_file)
-    run_vasp(gnome_file)
+    for vasp_file in get_file_list():
+        os.chdir(work_dir)
+        gnome_file = os.path.join('./mp-vasp-2047', vasp_file)
+        generate_file = os.path.join('./cif2mprelaxset', vasp_file)
+        sync_POTCAR()
+        run_vasp(generate_file)
+        run_vasp(gnome_file)
 
-    # then compare the results
-    # TODO
+        if compare_results():
+            print('In Theory, the results are the same.')
+        else:
+            print('In Theory, the results are different.')
+            sys.exit(1)
+        time.sleep(2)

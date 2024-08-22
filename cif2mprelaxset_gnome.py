@@ -7,7 +7,7 @@ from find_subset_gnome import get_composition
 # read the reduced_formula from the compositions.txt
 with open('compositions.txt', 'r') as file:
     lines = file.readlines()
-    for line in lines:
+    for line in lines[:10]:
         line = line.strip()
         _, reduced_f = line.rsplit(':', 1)
         # get the composition from the reduced formula
@@ -19,8 +19,8 @@ with open('compositions.txt', 'r') as file:
             structure = parser.get_structures(primitive=False)[0]
             # create the MPRelaxSet
             mpr = MPRelaxSet(structure, user_incar_settings={'ISIF': 3})
-            # write the MPRelaxSet to the directory
-            mpr.write_input('cif2mprelaxset', potcar_spec=True)
+            # write the MPRelaxSet to the directory, if exsits, replace it
+            mpr.write_input(f'cif2mprelaxset/{reduced_f}', potcar_spec=True)
         else:
             print(f"composition is None for reduced_f: {reduced_f}")
-        break
+            
