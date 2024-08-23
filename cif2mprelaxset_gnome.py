@@ -13,10 +13,10 @@ with open('compositions.txt', 'r') as file:
         # get the composition from the reduced formula
         composition = get_composition(reduced_f, csv_file='stable_materials_summary.csv')
         if composition is not None:
-            cif_file = f'./by_composition/{composition}.CIF'
+            cif_file = f'./by_composition_1921/{composition}.CIF'
             parser = CifParser(cif_file)
             # write the structure to the cif file
-            structure = parser.get_structures(primitive=False)[0]
+            structure = parser.parse_structures(primitive=False)[0]
             # create the MPRelaxSet
             mpr = MPRelaxSet(structure, user_incar_settings={'ISIF': 3})
             # write the MPRelaxSet to the directory, if exsits, replace it

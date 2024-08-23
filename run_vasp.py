@@ -9,19 +9,22 @@ def get_file_list():
     with open('compositions.txt', 'r') as f:
         vasp_files = []
         lines = f.readlines()
-        for line in lines:
-            _, reduced_f = line.rstrip(':', 1)
-            vasp_files.append(reduced_f)
+        for line in lines[:10]:
+            _, reduced_f = line.rsplit(':', 1)
+            vasp_files.append(reduced_f.strip())
         return vasp_files
     
 
-def unzip_gnome_zip():
-    # unzip the .zip file
-    if os.path.exists(gnome_file):
-        return
-    gnome_zip = os.path.join('./mp-vasp-2047', vasp_file + ' MPRelaxSet.zip')
-    # run the command and return the process
-    return subprocess.Popen(['unzip', gnome_zip, '-d', gnome_file])
+def unzip_gnome_zip(vasp_files):
+    for vasp_file in vasp_files:
+        gnome_file = os.path.join('./mp-vasp-2047', vasp_file)
+        gnome_zip = os.path.join('./mp-vasp-2047', vasp_file + ' MPRelaxSet.zip')
+        if os.path.exists(gnome_file):
+            continue
+        print(f'unzip {gnome_zip} to {gnome_file}')
+        # run the command and return the process
+        subprocess.Popen(['unzip', gnome_zip, '-d', gnome_file])
+    return
 
 def generate_POTCAR(gnome_file, potentials_dir):
     POTCAR_file = 'POTCAR'
@@ -42,8 +45,7 @@ def generate_POTCAR(gnome_file, potentials_dir):
                 sys.exit(1)
         return POTCAR_file
 
-def sync_POTCAR():
-    unzip_gnome_zip()
+def sync_POTCAR(potentials_dir):
     # if POTCAR file exists, then return
     if os.path.exists(os.path.join(generate_file, 'POTCAR')) and os.path.exists(os.path.join(gnome_file, 'POTCAR')):
         print('fine, POTCAR file already exists, run vasp directly.')
@@ -69,7 +71,19 @@ def run_vasp(material_file):
 def run_vasp_sbatch(material_file):
     # this is run on station01
     os.chdir(material_file)
+    # check if the OUTCAR file is run completely
+    if os.path.exists('OUTCAR'):
+        # if that file exists, then return
+        with open('OUTCAR', 'r') as f:
+            lines = f.readlines()
+            if 'Voluntary context switches' in lines[-1]:
+                print(f'{material_file} already run, skip')
+                return
+            else:
+                print(f'{material_file} not run completely, rerun')
+
     print(f'running vasp in {material_file}')
+    subprocess.run([f'ln -sf /online/home/hhzheng/material-web-crawler/vasp_sbatch.sh vasp_sbatch.sh'], shell=True)
     subprocess.run(['sbatch', 'vasp_sbatch.sh'])
     os.chdir(work_dir)
 
@@ -81,22 +95,20 @@ def compare_results():
 
 
 # ==== global variables ====
-potentials_dir = '/data/projects/vasp/potpaw_PBE.54'        # qstation01
+potentials_dir_qstation01 = '/data/projects/vasp/potpaw_PBE.54'        # qstation01
+potentials_dir_qlab200 = '/online/home/hhzheng/vasp/potpaw_PBE.54'  # qlab200
 work_dir = os.getcwd()              
 
 
 if __name__ == '__main__':
-    for vasp_file in get_file_list():
+    vasp_files = get_file_list()
+    unzip_gnome_zip(vasp_files)
+    for vasp_file in vasp_files[:10]:
         os.chdir(work_dir)
-        gnome_file = os.path.join('./mp-vasp-2047', vasp_file)
-        generate_file = os.path.join('./cif2mprelaxset', vasp_file)
-        sync_POTCAR()
-        run_vasp(generate_file)
-        run_vasp(gnome_file)
+        gnome_file = os.path.join(work_dir, 'mp-vasp-2047', vasp_file)
+        generate_file = os.path.join(work_dir, 'cif2mprelaxset', vasp_file)
+        sync_POTCAR(potentials_dir=potentials_dir_qlab200)
 
-        if compare_results():
-            print('In Theory, the results are the same.')
-        else:
-            print('In Theory, the results are different.')
-            sys.exit(1)
+        run_vasp_sbatch(generate_file)
+        run_vasp_sbatch(gnome_file)
         time.sleep(2)
