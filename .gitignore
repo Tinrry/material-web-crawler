@@ -5,6 +5,9 @@ by_composition/
 mp-vasp-2047
 temp/
 mp-vasp-2047/
+*.tar.gz
+cif2mprelaxset/
+foxfir-mprelaxset/
 
 # vim temp files
 *.swp
