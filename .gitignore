@@ -7,8 +7,8 @@ temp/
 mp-vasp-2047/
 *.tar.gz
 cif2mprelaxset/
-foxfir-mprelaxset/
-
+foxfire-mprelaxset/
+by_composition_1921/
 # vim temp files
 *.swp
 
