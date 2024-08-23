@@ -33,19 +33,19 @@ def find_zero_energy_href(driver, chemistry):
     while True:
         row += 1
         try:
-            elements = driver.find_elements(By.ID, f'row-{row}')
+            elements = driver.find_elements(By.ID, f'row-{row}')            # error will happen Ne just one row with 0 energy. dont worry.
+            energy = elements[0].find_elements(By.XPATH, 'div')[6].text
         except Exception as e:
             print(f'Error: {e}')
             return mp_href
         
-        energy = elements[0].find_elements(By.XPATH, 'div')[6].text
-        print(f'energy {energy}')
         if energy == '0':
             # extended_href = elements[0].find_elements(By.XPATH, 'div')[1].get_attribute('a href')
             extended_href = elements[0].find_elements(By.XPATH, 'div')[1].find_elements(By.XPATH, 'a')[0].get_attribute('href')
-            print(f'extended_href {extended_href}')
+            # print(f'extended_href {extended_href}')
             mp_href.append(extended_href)
         else:
+            print(f'energy {energy} break.')
             break
     return mp_href
 
@@ -57,9 +57,9 @@ if __name__ == "__main__":
     driver = webdriver.Firefox()
     login(driver)
 
-    if os.path.exists('chemistry_href.txt'):
-        os.remove('chemistry_href.txt')
-    for chemistry in periodic_table[:2]:
+    # if os.path.exists('chemistry_href.txt'):
+    #     os.remove('chemistry_href.txt')
+    for chemistry in periodic_table[8:]:
         mp_href = find_zero_energy_href(driver, chemistry)
         # write mp_href to txt file
         with open('chemistry_href.txt', 'a') as file:
