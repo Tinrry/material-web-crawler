@@ -16,7 +16,7 @@ def login(driver):
   elem = driver.find_element(By.NAME, "code")
   elem.send_keys(code)
   elem.send_keys(Keys.RETURN)
-  time.sleep(20) # Wait
+  time.sleep(10) # Wait
 
 
 def download(driver, url):

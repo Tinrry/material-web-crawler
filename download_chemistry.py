@@ -50,6 +50,11 @@ def find_zero_energy_href(driver, chemistry):
     return mp_href
 
 import os
+from tqdm import tqdm
+from download_gnome_files import download
+
+chemistry_href = 'chemistry_href.txt'
+
 
 
 if __name__ == "__main__":
@@ -57,12 +62,19 @@ if __name__ == "__main__":
     driver = webdriver.Firefox()
     login(driver)
 
-    # if os.path.exists('chemistry_href.txt'):
-    #     os.remove('chemistry_href.txt')
-    for chemistry in periodic_table[8:]:
-        mp_href = find_zero_energy_href(driver, chemistry)
-        # write mp_href to txt file
-        with open('chemistry_href.txt', 'a') as file:
-            for href in mp_href:
-                file.write(f'{href}\n')
+    if not os.path.exists('chemistry_href.txt'):
+        for chemistry in periodic_table:
+            mp_href = find_zero_energy_href(driver, chemistry)
+            # write mp_href to txt file
+            with open(chemistry_href, 'a') as file:
+                for href in mp_href:
+                    file.write(f'{href}\n')
+    else:
+        print('chemistry_href.txt exists.')
+
+    with open(chemistry_href, 'r') as file:
+        lines = file.readlines()
+        for url in tqdm(lines, desc='Downloading'):
+            download(driver, url.strip())
+
     driver.close()

@@ -1,4 +1,6 @@
 # big resource files
+*.tar.gz
+fu/
 by_composition/
 *.tar
 *.zip
