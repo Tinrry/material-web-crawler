@@ -1,0 +1,26 @@
+{
+    "lattice": [
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1]
+    ],
+    "atoms": [
+        "Cs",
+        "I"
+    ],
+    "positions": 
+        [[0, 0, 0],
+        [0.5, 0.5, 0]],
+    "spin": "no|yes|soc",
+    "pseudopotentials": "PBE|LDA",
+    "calculation": "static|relax",
+    "energy": 0.0,
+    "forces": [
+        [0, 0, 0],
+        [0, 0, 0]],
+    "stress": [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
+    ]
+}

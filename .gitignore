@@ -12,6 +12,12 @@ mp-vasp-2047/
 cif2mprelaxset/
 foxfire-mprelaxset/
 by_composition_1921/
+
+cif2mprelaxset/
+*.jsonl
+*.tar.gz
+
+
 # vim temp files
 *.swp
 
